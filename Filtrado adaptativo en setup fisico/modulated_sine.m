@@ -30,5 +30,6 @@ function [Y, t] = modulated_sine(fs, tf, fc, Ac, f_low_AM, f_low_FM, mod)
         case 'both'
             Y = LFO_A.*(Ac*sin( (2*pi*fc*t) + (phi + LFO_F*90)*(pi/180) ));
     end
+    
 end
 
