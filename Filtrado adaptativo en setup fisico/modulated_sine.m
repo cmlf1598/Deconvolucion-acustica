@@ -7,24 +7,28 @@
     % fs - frecuencia de muestreo
     % tf - duración deseada
     % fc - frecuencia central (Hz)
-    % f_low- frecuencia del oscilador de baja frecuencia
+    % f_low_AM - frecuencia del oscilador que modulo amplitud
+    % f_low_FM - frecuencia del oscilador que modulo frecuencia
     % Ac - amplitud central 
-    % mod - tipo de modulación, AM o FM
+    % mod - tipo de modulación, AM, FM o ambos
 %Outputs:
     % Y - señal sinusoidal modulada
     % t - eje temporal
 
-function [Y, t] = modulated_sine(fs, tf, fc, Ac, f_low, mod)
+function [Y, t] = modulated_sine(fs, tf, fc, Ac, f_low_AM, f_low_FM, mod)
     dt = 1/fs;
     
     phi = 0;
     t = 0:dt:(tf - dt);
-    LFO = sin(2*pi*f_low*t);
+    LFO_A = sin(2*pi*f_low_AM*t);
+    LFO_F = sin(2*pi*f_low_FM*t);
     switch mod
         case 'AM'
-            Y = LFO.*(Ac*sin( (2*pi*fc*t) + (phi)*(pi/180) ));
+            Y = LFO_A.*(Ac*sin( (2*pi*fc*t) + (phi)*(pi/180) ));
         case 'FM'
-            Y = (Ac*sin( (2*pi*fc*t) + (phi + LFO*90)*(pi/180) ));
+            Y = (Ac*sin( (2*pi*fc*t) + (phi + LFO_F*90)*(pi/180) ));
+        case 'both'
+            Y = LFO_A.*(Ac*sin( (2*pi*fc*t) + (phi + LFO_F*90)*(pi/180) ));
     end
 end
 

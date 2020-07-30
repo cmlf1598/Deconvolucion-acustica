@@ -43,14 +43,28 @@ switch mode
     %Barrido sinusoidal
     case 'special'
         t0 = 0; %tiempo inicial (s)
-        tf = 25; %tiempo final (s)
+        tf = 20; %tiempo final (s)
         t = 0:dt:(tf - dt);
+        %
+        fc = 1e3;
+        Ac = 1;
+        f_low_AM = 0.5;
+        f_low_FM = 10;
         switch signal
             case 'chirp'
                 f0 = 20;
                 f1 = 20e3;
                 D = chirp(t, f0, t(end), f1);
                 name = "chirp"+ f0 + "_" + f1;
+            case 'AM'
+                [D, ~] = modulated_sine(fs, tf, fc, Ac, f_low_AM, f_low_FM, 'AM');
+                name = "AM";
+            case 'FM'
+                [D, ~] = modulated_sine(fs, tf, fc, Ac, f_low_AM, f_low_FM, 'FM');
+                name = "FM";
+            case 'AM_and_FM'
+                [D, ~] = modulated_sine(fs, tf, fc, Ac, f_low_AM, f_low_FM, 'both');
+                name = "AM_and_FM";
         end   
         
         %Reproducir y grabar
@@ -63,7 +77,6 @@ switch mode
         audiowrite([pwd, char(path+name+"_original"+".wav")], D, fs);
         audiowrite([pwd, char(path+name+"_recorded"+".wav")], X, fs); 
         
-    
     case 'simple'
         t0 = 0; %tiempo inicial (s)
         tf = 5; %tiempo final (s)
