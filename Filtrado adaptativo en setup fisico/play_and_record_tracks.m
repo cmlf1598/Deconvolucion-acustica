@@ -5,24 +5,27 @@
 
 clear; clc;
 
+%Pruebas a un volumen general de 60
+
 %Parámetros de grabación
 bit_d = 24; %resolución de las muestras
 ch = 1; %número de canales de grabación
 
 %Playlist (y tiempo final de grabación (en segundos))
-%track = "cadence"; tf = 12;
-%track = "week_no_8"; tf = 40;
-%track = "in_my_place"; tf = 5;
-%track  = "evil"; tf = 7;
-%track = "peru"; tf = 20;
-%track = "atlantic_limited"; tf = 20;
+%Instrumentos individuales
 %track = "bohemian_rhapsody"; tf = 12;
-%track = "lonely_cat"; tf = 25;
-%track = "unconditional"; tf = 40;
-%track = "super_trouper"; tf = 14;
-track = "el_sol_no_es_para_todos"; tf = 30;
+%track = "cadence"; tf = 12;
+%track = "peru"; tf = 30;
+%track = "week_no_8"; tf = 30;
+%track  = "evil"; tf = 7;
+%Combinaciones
+%track = "lonely_cat"; tf = 45;
+%track = "atlantic_limited"; tf = 45;
+%track = "el_sol_no_es_para_todos"; tf = 60;
+track = "karma_police"; tf = 60;
+%track = "blauen_donau"; tf = 60;
 
-path = "D:\UVG\Proyecto de investigacion\Deconvolucion acustica basada en filtros adaptativos y redes neuronales regresivas\Canciones\";
+path = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Canciones\";
 
 %Cargar canción
 [Original, fs] = audioread(path+track+".flac"); %señal original

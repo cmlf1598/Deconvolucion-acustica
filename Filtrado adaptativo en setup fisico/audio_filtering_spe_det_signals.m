@@ -1,31 +1,23 @@
-%%Deterministic signals filtering
+%%Special deterministic signals filtering
 %Por Carlos Manuel López
-%19-4-20
+%1-8-20
 
 clear;
 %
 path = "/audio data/inputs/data determinista/";
 
 %Seleccionar el tipo de señal deseada
-%signal = "sine";
-%signal = "square";
-signal = "sawtooth";
+%signal = "AM";
+%signal = "FM";
+%signal = "AM_and_FM";
+signal = "chirp20_10000";
 
-%Frecuencia o frecuencias deseadas
-%test_freq = ["250", "500", "1000", "2500", "5000", "10000", "15000", "20000"];
-%test_freq = ["250", "1000", "2500", "10000"];
-%
-%test_freq = "250";
-%test_freq = "1000";
-%test_freq = "2500";
-%test_freq = "10000";
-
-[~, no_tracks] = size(test_freq);
+[~, no_tracks] = size(signal);
 
 for i = 1:no_tracks
     %Clips de audio
-    [D, fs] = audioread([pwd, char(path+signal+"_"+test_freq(i)+"_original.wav")]); %señal original
-    [X, ~] = audioread([pwd, char(path+signal+"_"+test_freq(i)+"_recorded.wav")]); %señal grabada
+    [D, fs] = audioread([pwd, char(path+signal+"_original.wav")]); %señal original
+    [X, ~] = audioread([pwd, char(path+signal+"_recorded.wav")]); %señal grabada
 
     [m,~] = size(D);
     
@@ -83,9 +75,9 @@ for i = 1:no_tracks
         legend norm(w);
         xlabel(t_tag); 
         max_W = max(W); %magnitud maxima del vector w
-        save(char("results/"+selected_filter+"/"+"numerical/"+"max_W_"+selected_filter+"_"+test_freq(i)+"_"+signal+".mat"),'max_W');
-        saveas(figure(2), [pwd char("/results/"+selected_filter+"/"+"W_vector_"+selected_filter+"_"+test_freq(i)+"_"+signal+".eps")] );
-        saveas(figure(2), [pwd char("/results/"+selected_filter+"/"+"png/"+"W_vector_"+selected_filter+"_"+test_freq(i)+"_"+signal+".png")] );
+        save(char("results/"+selected_filter+"/"+"numerical/"+"max_W_"+selected_filter+"_"+signal+".mat"),'max_W');
+        saveas(figure(2), [pwd char("/results/"+selected_filter+"/"+"W_vector_"+selected_filter+"_"+signal+".eps")] );
+        saveas(figure(2), [pwd char("/results/"+selected_filter+"/"+"png/"+"W_vector_"+selected_filter+"_"+signal+".png")] );
         
         %Error cuadrático medio
         figure(3);
@@ -97,9 +89,9 @@ for i = 1:no_tracks
         legend ECM;
         xlabel(t_tag);
         last_ECM = ecm(end); %ultimo valor ECM
-        save(char("results/"+selected_filter+"/"+"numerical/"+"last_ECM_"+selected_filter+"_"+test_freq(i)+"_"+signal+".mat"),'last_ECM');
-        saveas(figure(3), [pwd char("/results/"+selected_filter+"/"+"ECM_"+selected_filter+"_"+test_freq(i)+"_"+signal+".eps")] );
-        saveas(figure(3), [pwd char("/results/"+selected_filter+"/"+"png/"+"ECM_"+selected_filter+"_"+test_freq(i)+"_"+signal+".png")] );
+        save(char("results/"+selected_filter+"/"+"numerical/"+"last_ECM_"+selected_filter+"_"+signal+".mat"),'last_ECM');
+        saveas(figure(3), [pwd char("/results/"+selected_filter+"/"+"ECM_"+selected_filter+"_"+signal+".eps")] );
+        saveas(figure(3), [pwd char("/results/"+selected_filter+"/"+"png/"+"ECM_"+selected_filter+"_"+signal+".png")] );
         
         %Generación de espectogramas
         %2205 para una frecuencia mínima de 20 Hz
@@ -119,10 +111,10 @@ for i = 1:no_tracks
         spectrogram(Y, window, [], [], fs);
         title y[n]
         colormap bone;
-        saveas(figure(4), [pwd char("/results/"+selected_filter+"/"+"spectrogram_"+selected_filter+"_"+test_freq(i)+"_"+signal+".eps")] );
-        saveas(figure(4), [pwd char("/results/"+selected_filter+"/"+"png/"+"spectrogram_"+selected_filter+"_"+test_freq(i)+"_"+signal+".png")] );
+        saveas(figure(4), [pwd char("/results/"+selected_filter+"/"+"spectrogram_"+selected_filter+"_"+signal+".eps")] );
+        saveas(figure(4), [pwd char("/results/"+selected_filter+"/"+"png/"+"spectrogram_"+selected_filter+"_"+signal+".png")] );
         
-        audiowrite( [pwd char("/audio data/output/data determinista/"+selected_filter+"_"+test_freq(i)+"_"+signal+".wav")], Y, fs);
+        audiowrite( [pwd char("/audio data/output/data determinista/"+selected_filter+"_"+signal+".wav")], Y, fs);
     end
 end
 

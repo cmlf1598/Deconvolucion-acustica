@@ -3,6 +3,8 @@
 %Por Carlos Manuel López
 %22-7-20
 
+%A un volumen general de 30
+
 %Señales disponibles:
 %   -sinusoides
 %   -barrido sinusoidal
@@ -10,6 +12,13 @@
 %   -onda cuadrada
 
 clear; clc;
+
+%Señal
+%mode:
+%   simple
+%   special
+mode = 'special';
+%signal = 'FM';
 
 fs = 44100; %frecuencia de muestreo (Hz)
 dt = 1/fs; %periodo de muestreo
@@ -24,15 +33,8 @@ ch = 1; %número de canales de grabación
 %5 kHz - presence
 %10 kHz, 15kHz, 20kHz - brillance
 %test_freq = [250, 500, 1e3, 2.5e3, 5e3, 10e3, 15e3, 20e3];
-test_freq = [250, 500];
-
-%Señal
-%mode:
-%   simple
-%   special
-
-mode = 'simple';
-signal = 'sine';
+test_freq = [250, 1000, 2500, 10000];
+%test_freq = 250;
 
 %crear grabadora
 rec_obj = audiorecorder(fs, bit_d, ch);
@@ -43,17 +45,17 @@ switch mode
     %Barrido sinusoidal
     case 'special'
         t0 = 0; %tiempo inicial (s)
-        tf = 20; %tiempo final (s)
+        tf = 10; %tiempo final (s)
         t = 0:dt:(tf - dt);
         %
-        fc = 1e3;
+        fc = 2500;
         Ac = 1;
         f_low_AM = 0.5;
         f_low_FM = 10;
         switch signal
             case 'chirp'
                 f0 = 20;
-                f1 = 20e3;
+                f1 = 10e3;
                 D = chirp(t, f0, t(end), f1);
                 name = "chirp"+ f0 + "_" + f1;
             case 'AM'
