@@ -2,12 +2,18 @@
 %17-05-2020
 %Carlos López (16016)
 
-clear;
+clear; clc;
 
 %%
 
 %Escoger la naturaleza de las señales. Ya sea señales deterministas 
 %(sinusoides)o estocásticas (pista de audio).
+
+%Path disponibles
+path = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Clips grabados y originales\data determinista\";
+%path = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Clips grabados y originales\clips musicales\";
+%path_d = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Pistas originales\";
+%path_x = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Convolucionadas\";
 
 signal_type = 'track';
 
@@ -40,27 +46,41 @@ switch signal_type
         
     case 'track'
         %Señales (vectores columna)
-        [D_prev, fs] = audioread('The_Blue_Danube_original_30s.wav'); %señal original
-        [X_prev, ~] = audioread('The_Blue_Danube_recording_30s.wav'); %señal grabada
-
+        %[D_prev, fs] = audioread(path+"cadence_original.wav"); %señal original
+        %[X_prev, ~] = audioread(path+"cadence_recorded.wav"); %señal grabada
+        
+        [D_prev, fs] = audioread(path+"sine_1000_original.wav"); %señal original
+        [X_prev, ~] = audioread(path+"sine_1000_recorded.wav"); %señal grabada
+        
+        %[D_prev, fs] = audioread(path_d+"guitar_riff_1.wav"); %señal original
+        %[X_prev, ~] = audioread(path_x+"guitar_riff_in_church.wav"); %señal
+        
+        %guitar_riff_1
         %Tiempo final de recorte
-        tf = 0.1;
-        initial_sample = 5*fs;
+        %tf = 0.1;
+        initial_sample = 1;
         final_sample = initial_sample + fs*0.1 - 1;
         
         %Recortar señales
-         D_prev = D_prev(initial_sample:final_sample,:);
-         X_prev = X_prev(initial_sample:final_sample,:);
+        %D_prev = D_prev(initial_sample:final_sample,:);
+        %X_prev = X_prev(initial_sample:final_sample,:);
 
 end
 
 
 %Orden del filtro 
-N = 500;
+N = 50;
 
 %Tamaño de la señal de entrada (cantidad de muestras).
 m = size(X_prev,1);
 
+%%
+%Vector temporal
+t = 0:(1/fs):( (m/fs)-(1/fs)  );
+t = t';
+t_tag = 'Time (secs)';
+
+%%
 %Una ventana de largo N (orden del filtro) se va desplanzando una muestra a
 %la vez, capturando datos. Estas capturas se guardarán en X.
 
@@ -77,8 +97,11 @@ for i = 1:m
     X(:,i) = flip(X_prev(i:(N-1+i)), 1);
 end
 
+
 %La señal original 
 Y = D_prev';
+
+%%
 
 %Muestras en orden aleatorio u ordenadas
 order = 'sequential';
@@ -87,10 +110,9 @@ order = 'sequential';
 train_ind = (1:m/2);
 test_ind = (m/2)+1:m; 
 
-%Señales de comparación, contra las muestras de prueba
+%Señales a comparar, contra las muestras de prueba
 x_comp_tr = X_prev(N + train_ind,:);
 x_comp_ts = X_prev(N + test_ind - 1,:);
-
 
 switch order
     case 'sequential'  
@@ -116,10 +138,13 @@ Ytest = Y(:,test_ind);
 [n_y,~] = size(Ytrain);
 
 %Se define la cantidad de nodos de la capa oculta
-n_h = 200;
+n_h = 25;
 
 %Número de interaciones
 k = 1000;
+
+%Tasa de aprendizaje
+beta = 0.1;
 
 %Se inicializan los parámetros
 [parameters] = initializeParameters(n_x, n_h, n_y);
@@ -136,7 +161,7 @@ for i = 1:k
     [grads] = backwardPropagation(parameters, cache, Xtrain, Ytrain);
     
     %Actualización de parámetros
-    parameters = updateParameters(parameters, grads, 0.05);
+    parameters = updateParameters(parameters, grads, beta);
     
     fprintf("Iteracion %5i | Costo = %10.10f\n",i,cost_train);
     
@@ -150,13 +175,14 @@ switch data
         [A2, ~] = forwardPropagation(Xtrain, parameters);
         x_n = x_comp_tr; %señal grabada 
         d_n = Ytrain; %señal deseada 
-        [cost_test] = getCost(A2, Ytrain);
+        [cost_test] = getCost(A2, Ytrain);        
+        t = t(1:m/2);
     case 'test'
         [A2, ~] = forwardPropagation(Xtest, parameters);
         x_n = x_comp_ts; %señal grabada 
         d_n = Ytest; %señal deseada 
         [cost_test] = getCost(A2, Ytest);
-
+        t = t((m/2)+1:m);
         
 end
 
@@ -176,17 +202,22 @@ sound(x_n,fs);
 %%
 sound(y_n,fs);
 
+%%
+sound(d_n,fs);
 %% Graficando
+
+zoom_in_range = fs/100;
+%zoom_in_range = m/2;
 
 clf(); figure(1);
 subplot(3, 1, 1);
-plot(x_n, 'blue');
+plot(t(1:zoom_in_range), x_n(1:zoom_in_range), 'blue');
 legend x[n];
 subplot(3, 1, 2);
-plot(d_n, 'red');
+plot(t(1:zoom_in_range), d_n(1:zoom_in_range), 'red');
 legend d[n];
 subplot(3, 1, 3);
-plot(y_n,  'green');
+plot(t(1:zoom_in_range), y_n(1:zoom_in_range),  'green');
 %yaxis(-1,1);
 legend y[n];
 
