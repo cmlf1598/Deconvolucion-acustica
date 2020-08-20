@@ -13,7 +13,7 @@ function [grads] = backwardPropagation(parameters, cache, X, Y)
     %n_h = tamaño capa de oculta
     %n_o = tamaño capa de salida
     dZ2 = -2*(Y - A2); %(n_o,m)
-    dW2 = (dZ2*A1')/m; %(n_o,m)*(m,n_h)
+    dW2 = (dZ2*A1')/m; %(n_o,m)*(m,n_h) = (n_o, n_h)
     db2 = sum(dZ2, 2)/m; %(n_o,1)
     dZ1 = (W2'*dZ2).*(1 - A1.^2); %(n_h,n_o)*(n_o,m).*(n_h,m) = (n_h,m)
     dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)

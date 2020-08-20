@@ -1,4 +1,5 @@
-%Combinación de una red neuronal regresiva y filtro LMS 
+%TDNN (Time Delay Neural Network)
+%Batch gradient descent
 %17-05-2020
 %Carlos López (16016)
 
@@ -6,16 +7,20 @@ clear; clc;
 
 %%
 
-%Escoger la naturaleza de las señales. Ya sea señales deterministas 
-%(sinusoides)o estocásticas (pista de audio).
+%Parámetros de entrada
+
+signal_type = 'track'; %tipo de señal (sinusoide o pista de audio).
+N = 50; %orden del filtro 
+order = 'sequential'; %orden de las muestras de entrenamiento
+n_h = 25; %cantidad de nodos de la capa oculta
+k = 1000; %número de interaciones de entrenamiento (epoch)
+beta = 0.1; %tasa de aprendizaje
 
 %Path disponibles
 path = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Clips grabados y originales\data determinista\";
 %path = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Clips grabados y originales\clips musicales\";
 %path_d = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Pistas originales\";
 %path_x = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Convolucionadas\";
-
-signal_type = 'track';
 
 switch signal_type
     case 'sines'
@@ -45,6 +50,9 @@ switch signal_type
         end
         
     case 'track'
+        
+        %Selección de pista de audio
+        
         %Señales (vectores columna)
         %[D_prev, fs] = audioread(path+"cadence_original.wav"); %señal original
         %[X_prev, ~] = audioread(path+"cadence_recorded.wav"); %señal grabada
@@ -55,26 +63,18 @@ switch signal_type
         %[D_prev, fs] = audioread(path_d+"guitar_riff_1.wav"); %señal original
         %[X_prev, ~] = audioread(path_x+"guitar_riff_in_church.wav"); %señal
         
-        %guitar_riff_1
-        %Tiempo final de recorte
-        %tf = 0.1;
+        %Recorte de señales
         initial_sample = 1;
         final_sample = initial_sample + fs*0.1 - 1;
-        
-        %Recortar señales
+               
         %D_prev = D_prev(initial_sample:final_sample,:);
         %X_prev = X_prev(initial_sample:final_sample,:);
 
 end
 
-
-%Orden del filtro 
-N = 50;
-
 %Tamaño de la señal de entrada (cantidad de muestras).
 m = size(X_prev,1);
 
-%%
 %Vector temporal
 t = 0:(1/fs):( (m/fs)-(1/fs)  );
 t = t';
@@ -97,14 +97,10 @@ for i = 1:m
     X(:,i) = flip(X_prev(i:(N-1+i)), 1);
 end
 
-
 %La señal original 
 Y = D_prev';
 
 %%
-
-%Muestras en orden aleatorio u ordenadas
-order = 'sequential';
 
 %Indices (secuenciales)
 train_ind = (1:m/2);
@@ -137,19 +133,11 @@ Ytest = Y(:,test_ind);
 [n_x,~] = size(Xtrain);
 [n_y,~] = size(Ytrain);
 
-%Se define la cantidad de nodos de la capa oculta
-n_h = 25;
-
-%Número de interaciones
-k = 1000;
-
-%Tasa de aprendizaje
-beta = 0.1;
-
 %Se inicializan los parámetros
 [parameters] = initializeParameters(n_x, n_h, n_y);
 
 for i = 1:k
+    
     
     %Se aplica forward propagation
     [A2, cache] = forwardPropagation(Xtrain, parameters);
