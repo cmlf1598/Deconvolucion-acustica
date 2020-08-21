@@ -1,11 +1,14 @@
 %Backward propagation
-function [grads] = backwardPropagation(parameters, cache, X, Y)
+
+
+function [grads] = backward_propagation(parameters, cache, X, Y, act_func)
     [~, m] = size(Y);
     
     W2 = parameters{3,1};
     
     A1 = cache{2,1};
     A2 = cache{4,1};
+    D1 = cache{5,1};
     
     %Se aplica backward propagation
     %Se promedia el cambio diferencial que aporta cada muestra
@@ -15,7 +18,14 @@ function [grads] = backwardPropagation(parameters, cache, X, Y)
     dZ2 = -2*(Y - A2); %(n_o,m)
     dW2 = (dZ2*A1')/m; %(n_o,m)*(m,n_h) = (n_o, n_h)
     db2 = sum(dZ2, 2)/m; %(n_o,1)
-    dZ1 = (W2'*dZ2).*(1 - A1.^2); %(n_h,n_o)*(n_o,m).*(n_h,m) = (n_h,m)
+    
+    switch act_func
+        case 'sine'
+            dZ1 = (W2'*dZ2).*(D1); %(n_h,n_o)*(n_o,m).*(n_h,m) = (n_h,m)
+        case 'tanh'
+            dZ1 = (W2'*dZ2).*(1 - A1.^2); %(n_h,n_o)*(n_o,m).*(n_h,m) = (n_h,m)
+    end
+    
     dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
     db1 = sum(dZ1,2)/m; %(n_h, 1) 
     

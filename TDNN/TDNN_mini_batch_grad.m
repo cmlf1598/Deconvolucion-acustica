@@ -8,13 +8,17 @@ clear; clc;
 %% Parámetros
 
 %Parámetros de entrenamiento
-signal_type = 'deterministic'; %tipo de señal ("deterministic" o "track").
+signal_type = 'track'; %tipo de señal ("deterministic" o "track").
 order = 'sequential'; %orden de las muestras de entrenamiento
 beta = 0.1; %tasa de aprendizaje
 batch_sz = 2205;  
-no_epochs = 5; %número de interaciones de entrenamiento (epochs)
+no_epochs = 20; %número de interaciones de entrenamiento (epochs)
 
 %Parámetros de la arquitectura
+%Funciones de activación disponibles
+%tanh - tangente hiperbólico
+%sine - sinusoide
+activation_func = 'sine'; %función de activación
 N = 1000; %orden del filtro 
 n_h = 100; %cantidad de nodos de la capa oculta
 
@@ -129,13 +133,13 @@ for i = 1:no_epochs
        
         
         %Se aplica forward propagation
-        [A2, cache] = forwardPropagation(X_batch, parameters);
+        [A2, cache] = forward_propagation(X_batch, parameters, activation_func);
 
         %Se obtiene el resultado de la función costo
         [cost_train] = getCost(A2, Y_batch);
 
         %Se aplica backward propagation
-        [grads] = backwardPropagation(parameters, cache, X_batch, Y_batch);
+        [grads] = backward_propagation(parameters, cache, X_batch, Y_batch, activation_func);
 
         %Actualización de parámetros
         parameters = updateParameters(parameters, grads, beta);
@@ -157,7 +161,7 @@ for j = 1:no_batches
     end
     
     %Se aplica forward propagation
-    [A2, ~] = forwardPropagation(X_batch, parameters);
+    [A2, ~] = forward_propagation(X_batch, parameters, activation_func);
     
     Y_est(1 + (batch_sz*(j-1)):j*batch_sz) = A2;
 end
@@ -185,7 +189,7 @@ t = t';
 t_tag = 'Time (secs)';
 
 t0 = 1;
-tf = 1.05;
+tf = 4;
 
 %zoom_in_range = m/2;
 
