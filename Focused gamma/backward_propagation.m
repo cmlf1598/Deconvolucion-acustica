@@ -23,21 +23,20 @@ function [grads] = backward_propagation(parameters, cache, X, Y, act_func)
     db2 = sum(dZ2, 2)/m; %(n_o,1)
     dZ1 = (W2'*dZ2).*(D1); %(n_h,n_o)*(n_o,m).*(n_h,m) = (n_h,m)
     
+    
     switch act_func
-        case "sine"            
+        case 'sine'          
             dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
             db1 = sum(dZ1,2)/m; %(n_h, 1) 
-        case "sigmoid"
+        case 'tanh'
             dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
             db1 = sum(dZ1,2)/m; %(n_h, 1) 
-        case "tanh"
-            dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
-            db1 = sum(dZ1,2)/m; %(n_h, 1) 
-        case "RBF"
+        case 'RBF'
             dW1 = (dZ1*(-ones(m, n_i)))/m; %(n_h,m)*(m,n_i)
             db1 = zeros(n_h, 1); %(n_h, 1) 
     end
     
+    %dmu = (dZ1
     
     
     grads ={dW1; db1; dW2; db2};

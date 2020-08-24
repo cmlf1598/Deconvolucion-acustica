@@ -20,8 +20,7 @@ no_epochs = 5; %número de interaciones de entrenamiento (epochs)
 %Funciones de activación disponibles
 %tanh - tangente hiperbólico
 %sine - sinusoide
-%RBF - función de base radial (gaussiana)
-%sigmoid - sigmoide
+%RBF - función de base radial
 activation_func = "sine"; %función de activación
 N = 1000; %orden del filtro 
 n_h = 20; %cantidad de nodos de la capa oculta
@@ -145,16 +144,18 @@ for n = 1:no_tracks
     d_n = D_prev(1:(no_batches*batch_sz), 1);
     y_n = Y_est';
 
+
+    %sound(x_n,fs);    
+    %sound(y_n,fs);
+    %sound(d_n,fs);
     %% Graficando
     
     figure(1);
     plot((1:no_epochs*no_batches), C);
     xlabel('Batch'); 
     ylabel('Cost');
-    if save_data == true
-        saveas(figure(1), [pwd char("/results/"+activation_func+"/"+"cost_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
-        saveas(figure(1), [pwd char("/results/"+activation_func+"/"+"png/"+"cost_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
-    end
+    saveas(figure(1), [pwd char("/results/"+activation_func+"/"+"cost_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
+    saveas(figure(1), [pwd char("/results/"+activation_func+"/"+"png/"+"cost_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
     
     %Vector temporal
     t = 0:(1/fs):( (no_batches*batch_sz/fs)-(1/fs)  );
@@ -179,11 +180,10 @@ for n = 1:no_tracks
     plot(t, y_n, 'color', [0.9290, 0.6940, 0.1250]);
     yaxis(-1,1);
     legend y[n];
-    xlabel(t_tag);
-    if save_data == true
-        saveas(figure(2), [pwd char("/results/"+activation_func+"/"+"signals_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
-        saveas(figure(2), [pwd char("/results/"+activation_func+"/"+"png/"+"signals_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
-    end
+    xlabel(t_tag); 
+    saveas(figure(2), [pwd char("/results/"+activation_func+"/"+"signals_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
+    saveas(figure(2), [pwd char("/results/"+activation_func+"/"+"png/"+"signals_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
+    
     %% Espectrogramas
 
     %2205 para una frecuencia mínima de 20 Hz    
@@ -202,9 +202,7 @@ for n = 1:no_tracks
     spectrogram(y_n, window, [], [], fs);
     title y[n]
     colormap bone;
-    if save_data == true
-        saveas(figure(3), [pwd char("/results/"+activation_func+"/"+"spectrogram_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
-        saveas(figure(3), [pwd char("/results/"+activation_func+"/"+"png/"+"spectrogram_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
-    end
+    saveas(figure(3), [pwd char("/results/"+activation_func+"/"+"spectrogram_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
+    saveas(figure(3), [pwd char("/results/"+activation_func+"/"+"png/"+"spectrogram_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
 end
 

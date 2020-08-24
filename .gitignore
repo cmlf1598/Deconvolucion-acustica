@@ -1,6 +1,7 @@
 *.flac
+*.eps
 Audio data/
 Filtrado adaptativo en setup fisico/audio data/
 Filtrado adaptativo en setup fisico/results/
 Convolucion/audio output/
-
+TDNN/results/

@@ -8,7 +8,7 @@ path = "/audio data/inputs/clips musicales/";
 
 %Selección de la canción o canciones a filtrar
 %
-%playlist = ["bohemian_rhapsody", "cadence", "peru", "week_no_8", "evil"...
+%playlist = ["bohemian_rhapsody", "cadence", "peru", "week_no_8"];
 %playlist = ["lonely_cat", "atlantic_limited", "el_sol_no_es_para_todos", "karma_police", "blauen_donau"];
 %
 %playlist = "bohemian_rhapsody";
