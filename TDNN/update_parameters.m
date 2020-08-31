@@ -1,5 +1,5 @@
 %Actalización de parámetros
-function [parameters] = updateParameters(parameters, grads, learningRate)
+function [parameters] = update_parameters(parameters, grads, learningRate)
     
     %Se cargan los parámetros
     W1 = parameters{1,1};

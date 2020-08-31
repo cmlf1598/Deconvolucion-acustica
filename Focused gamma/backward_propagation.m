@@ -1,7 +1,7 @@
 %Backward propagation
 
 
-function [grads] = backward_propagation(parameters, cache, X, Y, act_func)
+function [grads] = backward_propagation(parameters, cache, X, Y, act_func, dX_dMU)
     [~, m] = size(Y);
     
     W1 = parameters{1,1};
@@ -22,10 +22,14 @@ function [grads] = backward_propagation(parameters, cache, X, Y, act_func)
     dW2 = (dZ2*A1')/m; %(n_o,m)*(m,n_h) = (n_o, n_h)
     db2 = sum(dZ2, 2)/m; %(n_o,1)
     dZ1 = (W2'*dZ2).*(D1); %(n_h,n_o)*(n_o,m).*(n_h,m) = (n_h,m)
-    
+    dX = (W1'*dZ1)/m; %(n_x,n_h)*(n_h,m) = (n_x,m)
+    dmu = sum(dX(2:n_i, :).*dX_dMU, 2)/m; %(n_x-1)
     
     switch act_func
         case 'sine'          
+            dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
+            db1 = sum(dZ1,2)/m; %(n_h, 1)
+        case "sigmoid"
             dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
             db1 = sum(dZ1,2)/m; %(n_h, 1) 
         case 'tanh'
@@ -36,8 +40,5 @@ function [grads] = backward_propagation(parameters, cache, X, Y, act_func)
             db1 = zeros(n_h, 1); %(n_h, 1) 
     end
     
-    %dmu = (dZ1
-    
-    
-    grads ={dW1; db1; dW2; db2};
+    grads ={dW1; db1; dW2; db2; dmu};
 end

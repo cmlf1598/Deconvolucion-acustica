@@ -5,11 +5,15 @@
     %n_o - tamaño de la capa de salida
 %Output:
     %parameters - array de celdas con parámetros inicializados.
-function [parameters] = initializeParameters(n_x, n_h, n_y)
+function [parameters] = initialize_parameters(n_x, n_h, n_y, act_func)
+    %rng(1,'twister');
+    %s = rng;
     
     %Se escogen valores aleatorios
-    W1 = 0.1*rand(n_h, n_x);
+    %rng(s);
+    W1 = 0.1*rand(n_h, n_x); 
     b1 = zeros(n_h, 1);
+    %rng(s);
     W2 = 0.1*rand(n_y, n_h);
     b2 = zeros(n_y,1);
     

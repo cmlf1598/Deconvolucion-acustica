@@ -1,4 +1,4 @@
-%Focused Gamma Neural Network
+%TDNN (Time Delay Neural Network)
 %Mini-batch gradient descent
 %20-08-2020
 %Carlos López (16016)
@@ -11,8 +11,8 @@ new_network = true; %si desea crear una nueva red, de lo contrario se carga la a
 train_network = true; %si se desea entrenar la red
 
 %Parámetros de entrenamiento
-signal_type = 'track'; %tipo de señal ("deterministic" o "track").
-order = 'sequential'; %orden de las muestras de entrenamiento
+signal_type = "track"; %tipo de señal ("deterministic" o "track").
+order = "sequential"; %orden de las muestras de entrenamiento
 beta = 0.1; %tasa de aprendizaje
 batch_sz = 2205;  
 no_epochs = 5; %número de interaciones de entrenamiento (epochs)
@@ -23,8 +23,8 @@ no_epochs = 5; %número de interaciones de entrenamiento (epochs)
 %sine - sinusoide
 %RBF - función de base radial (gaussiana)
 %sigmoid - sigmoide
-activation_func = "tanh"; %función de activación
-N = 100; %orden del filtro 
+activation_func = "RBF"; %función de activación
+N = 1000; %orden del filtro 
 n_h = 20; %cantidad de nodos de la capa oculta
 
 %Opciones de guardado
@@ -43,7 +43,7 @@ switch signal_type
     case "track"
         path = main_path + "clips musicales\";
         %playlist = ["bohemian_rhapsody", "cadence", "peru", "week_no_8"];
-        playlist = ["peru", "week_no_8"];
+        playlist = ["bohemian_rhapsody", "peru"];
         %playlist = "week_no_8";
         %playlist = "week_no_8";
 end
@@ -69,9 +69,18 @@ for n = 1:no_tracks
     X_zero_p = [zeros(N-1, 1); X_prev]; %zero padding
     Y = D_prev'; 
 
-    %% Entrenamiento de la gamma
+    %% Entrenamiento de la TDNN
            
     no_batches = (m - mod(m,batch_sz))/batch_sz; %número de batches
+
+    %Generación de indices aleatorios
+
+    epoch_rand_ind = zeros(1, no_batches*batch_sz); 
+
+    for j = 1:no_batches
+        batch_rand_ind = randperm(batch_sz);
+        epoch_rand_ind(1, (1 + (batch_sz)*(j-1)):(batch_sz*j)) = batch_rand_ind;
+    end
 
     %Historial de costo
     C = zeros(1,no_epochs*no_batches);
@@ -97,33 +106,23 @@ for n = 1:no_tracks
 
                 %Se inicializa el batch
                 X_batch = zeros(N, batch_sz);
-                X_line = X_prev((1 + (batch_sz)*(j-1)):(batch_sz*j));
-                Y_line = Y((1 + (batch_sz)*(j-1)):(batch_sz*j) );   
-                Y_batch = Y(1, (1 + (batch_sz)*(j-1)):(batch_sz*j) );      
-                %
-                dX_dMU = zeros(N-1, batch_sz);
-                
-                delay_line = zeros(N,1);
-                
-                %Memoria gamma
-                mu = parameters{5,1};
-                
+                Y_batch = Y(1, (1 + (batch_sz)*(j-1)):(batch_sz*j) );          
+
                 %Se crea el batch 
                 for k = 1:batch_sz
 
-                    delay_line(2:N) = delay_line(1:N-1, 1); %corrimiento en la linea de delays
-                    delay_line(1) = X_line(k); %muestra actual al principio de la linea
-                    
-                    dX_dMU(:, k) = delay_line(2:N) + delay_line(1:N-1)./mu; %y[n-1] + (1/mu)x[n];
-                    
-                    delay_line(1:N-1) = delay_line(1:N-1) + mu.*delay_line(2:N); %recursión gamma
-                    
-                    dX_dMU(:, k) = dX_dMU(1:N-1, k) + delay_line(1:N-1)./mu; %y[n-1] - (1/mu)y[n] +(1/mu)x[n]
-                    
-                    X_batch(:,k) = delay_line; %orden secuencial
- 
-                    
+                    sample = flip(X_zero_p( (k + (batch_sz*(j-1))):((N-1+k)+(batch_sz*(j-1))) ), 1);
+
+                    switch order
+                        case "sequential"  
+                            X_batch(:,k) = sample;
+                        case "random"
+                            k_rand = epoch_rand_ind(1, k + (batch_sz)*(j - 1) );
+                            X_batch(:, k_rand) = sample;
+                            Y_batch(:, k_rand) = Y_batch(1,k);
+                    end
                 end
+
 
                 %Se aplica forward propagation
                 [A2, cache] = forward_propagation(X_batch, parameters, activation_func);
@@ -132,7 +131,7 @@ for n = 1:no_tracks
                 [cost] = get_cost(A2, Y_batch);
 
                 %Se aplica backward propagation
-                [grads] = backward_propagation(parameters, cache, X_batch, Y_batch, activation_func, dX_dMU);
+                [grads] = backward_propagation(parameters, cache, X_batch, Y_batch, activation_func);
 
                 %Actualización de parámetros
                 parameters = update_parameters(parameters, grads, beta);
@@ -145,7 +144,7 @@ for n = 1:no_tracks
             fprintf("Epoch %4i | Costo = %10.10f\n",i,cost);
         end
     end
-    %% Se prueba la gamma
+    %% Se prueba la TDNN
     
     Y_est = zeros(1, (no_batches*batch_sz));
 
@@ -153,8 +152,8 @@ for n = 1:no_tracks
         X_batch = zeros(N, batch_sz);
 
         for k = 1:batch_sz
-            delay_line = flip(X_zero_p( (k + (batch_sz*(j-1))):((N-1+k)+(batch_sz*(j-1))) ), 1);
-            X_batch(:,k) = delay_line;
+            sample = flip(X_zero_p( (k + (batch_sz*(j-1))):((N-1+k)+(batch_sz*(j-1))) ), 1);
+            X_batch(:,k) = sample;
         end
 
         %Se aplica forward propagation
@@ -179,8 +178,8 @@ for n = 1:no_tracks
     xlabel('Batch'); 
     ylabel('Cost');
     if save_graphs == true
-        saveas(figure(1), [pwd char("\results\"+activation_func+"\"+"cost_"+playlist(n)+"_gamma_"+activation_func+".eps")] );
-        saveas(figure(1), [pwd char("\results\"+activation_func+"\"+"png\"+"cost_"+playlist(n)+"_gamma_"+activation_func+".png")] );
+        saveas(figure(1), [pwd char("\results\"+activation_func+"\"+"cost_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
+        saveas(figure(1), [pwd char("\results\"+activation_func+"\"+"png\"+"cost_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
     end
     
     %Vector temporal
@@ -214,8 +213,8 @@ for n = 1:no_tracks
     legend y[n];
     xlabel(t_tag);
     if save_graphs == true
-        saveas(figure(2), [pwd char("\results\"+activation_func+"\"+"signals_"+playlist(n)+"_gamma_"+activation_func+".eps")] );
-        saveas(figure(2), [pwd char("\results\"+activation_func+"\"+"png\"+"signals_"+playlist(n)+"_gamma_"+activation_func+".png")] );
+        saveas(figure(2), [pwd char("\results\"+activation_func+"\"+"signals_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
+        saveas(figure(2), [pwd char("\results\"+activation_func+"\"+"png\"+"signals_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
     end
     %% Espectrogramas
 
@@ -236,12 +235,12 @@ for n = 1:no_tracks
     title y[n]
     colormap bone;
     if save_graphs == true
-        saveas(figure(3), [pwd char("\results\"+activation_func+"\"+"spectrogram_"+playlist(n)+"_gamma_"+activation_func+".eps")] );
-        saveas(figure(3), [pwd char("\results\"+activation_func+"\"+"png\"+"spectrogram_"+playlist(n)+"_gamma_"+activation_func+".png")] );
+        saveas(figure(3), [pwd char("\results\"+activation_func+"\"+"spectrogram_"+playlist(n)+"_TDNN_"+activation_func+".eps")] );
+        saveas(figure(3), [pwd char("\results\"+activation_func+"\"+"png\"+"spectrogram_"+playlist(n)+"_TDNN_"+activation_func+".png")] );
     end
     
     if save_audio == true
-        audiowrite( [pwd char("\audio data\"+activation_func+"\"+playlist(n)+"_gamma_"+activation_func+".wav")], y_n, fs);
+        audiowrite( [pwd char("\audio data\"+activation_func+"\"+playlist(n)+"_TDNN_"+activation_func+".wav")], y_n, fs);
     end
 end
 

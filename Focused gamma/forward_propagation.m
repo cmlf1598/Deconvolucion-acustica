@@ -13,7 +13,7 @@ function [A2, cache] = forward_propagation(X, parameters, act_func)
     b1 = parameters{2,1};
     W2 = parameters{3,1};
     b2 = parameters{4,1};
-    mu = parameters{5,1};
+    %mu = parameters{5,1};
     
     [~, m] = size(X); 
     [n_h, n_i] = size(W1);
@@ -25,6 +25,10 @@ function [A2, cache] = forward_propagation(X, parameters, act_func)
             Z1 = W1*X + b1;
             A1 = sin(Z1);
             D1 = cos(Z1); %primera derivada
+        case "sigmoid"
+            Z1 = W1*X + b1;
+            A1 = 1./(1 + exp(-Z1));
+            D1 = A1 - A1.^2; 
         case 'tanh'
             Z1 = W1*X + b1;
             A1 = tanh(Z1);

@@ -4,7 +4,7 @@
     %Y - valores correspondientes a la ecuación de la recta original
 %Outputs:
     %cost - costo obtenido en base a la varianza
-function [cost] = getCost(A2, Y)
+function [cost] = get_cost(A2, Y)
     
     %Se obtiene la cantidad de muestras
     [~, m] = size(Y);
