@@ -13,7 +13,9 @@ train_network = true; %si se desea entrenar la red
 %Parámetros de entrenamiento
 signal_type = 'track'; %tipo de señal ("deterministic" o "track").
 order = 'sequential'; %orden de las muestras de entrenamiento
-beta = 0.1; %tasa de aprendizaje
+beta = 0.1; %tasa de aprendizaje general
+epsilon = (1e3)*beta; %tasa de aprendizaje de mu
+mu_initial = 0.5;
 batch_sz = 2205;  
 no_epochs = 5; %número de interaciones de entrenamiento (epochs)
 
@@ -24,8 +26,8 @@ no_epochs = 5; %número de interaciones de entrenamiento (epochs)
 %RBF - función de base radial (gaussiana)
 %sigmoid - sigmoide
 activation_func = "tanh"; %función de activación
-N = 100; %orden del filtro 
-n_h = 20; %cantidad de nodos de la capa oculta
+N = 1000; %orden del filtro 
+n_h = 100; %cantidad de nodos de la capa oculta
 
 %Opciones de guardado
 save_parameters = true; %guardar los parámetros de la red 
@@ -39,12 +41,15 @@ switch signal_type
     case "deterministic"
         path = main_path + "data determinista\";
         %playlist = ["AM", "FM", "AM_and_FM", "chirp20_10000"];
-        playlist = ["AM", "FM"];
+        %playlist = ["AM", "FM"];
+        playlist = ["AM_and_FM", "chirp20_10000"];
     case "track"
         path = main_path + "clips musicales\";
-        %playlist = ["bohemian_rhapsody", "cadence", "peru", "week_no_8"];
-        playlist = ["peru", "week_no_8"];
-        %playlist = "week_no_8";
+        playlist = ["bohemian_rhapsody", "cadence", "peru", "week_no_8"];
+        %playlist = ["bohemian_rhapsody", "cadence"];
+        %playlist = ["peru", "week_no_8"];
+        %playlist = "bohemian_rhapsody";
+        %playlist = "peru";
         %playlist = "week_no_8";
 end
 
@@ -81,7 +86,7 @@ for n = 1:no_tracks
         if activation_func == "RBF"
             [parameters] = initialize_parameters_and_centers(N, n_h, 1, X_prev);
         else
-            [parameters] = initialize_parameters(N, n_h, 1);
+            [parameters] = initialize_parameters(N, n_h, 1, mu_initial);
         end      
         
     else 
@@ -104,21 +109,30 @@ for n = 1:no_tracks
                 dX_dMU = zeros(N-1, batch_sz);
                 
                 delay_line = zeros(N,1);
+                alfa = zeros(N,1);
                 
                 %Memoria gamma
                 mu = parameters{5,1};
                 
                 %Se crea el batch 
                 for k = 1:batch_sz
-
+                    
+                    delay_line(1:N-1) = mu.*delay_line(1:N-1) + (1-mu).*delay_line(2:N); %recursión gamma
+                    
                     delay_line(2:N) = delay_line(1:N-1, 1); %corrimiento en la linea de delays
                     delay_line(1) = X_line(k); %muestra actual al principio de la linea
                     
-                    dX_dMU(:, k) = delay_line(2:N) + delay_line(1:N-1)./mu; %y[n-1] + (1/mu)x[n];
+                    alfa(2:N) = (1-mu).*alfa(2:N) + mu.*alfa(1:N-1) + (delay_line(1:N-1) - delay_line(2:N));
+                    dX_dMU(:, k) = alfa(2:N);
                     
-                    delay_line(1:N-1) = delay_line(1:N-1) + mu.*delay_line(2:N); %recursión gamma
+                    %dX_dMU(:, k) = delay_line(2:N) + delay_line(1:N-1)./mu; %y[n-1] + (1/mu)x[n];
                     
-                    dX_dMU(:, k) = dX_dMU(1:N-1, k) + delay_line(1:N-1)./mu; %y[n-1] - (1/mu)y[n] +(1/mu)x[n]
+                    %delay_line(1:N-1) = delay_line(1:N-1) + mu.*delay_line(2:N); %recursión gamma
+                    
+                    
+                    %dX_dMU(:, k) = dX_dMU(1:N-1, k) + delay_line(1:N-1)./mu; %y[n-1] - (1/mu)y[n] +(1/mu)x[n]
+                    
+                    
                     
                     X_batch(:,k) = delay_line; %orden secuencial
  
@@ -135,7 +149,7 @@ for n = 1:no_tracks
                 [grads] = backward_propagation(parameters, cache, X_batch, Y_batch, activation_func, dX_dMU);
 
                 %Actualización de parámetros
-                parameters = update_parameters(parameters, grads, beta);
+                parameters = update_parameters(parameters, grads, beta, epsilon);
 
                 C(1, (j + (i-1)*(no_batches))) = cost; %guardar costo
 
@@ -174,7 +188,7 @@ for n = 1:no_tracks
 
     %% Graficando
     
-    figure(1);
+    clf; figure(1);
     plot((1:no_epochs*no_batches), C);
     xlabel('Batch'); 
     ylabel('Cost');
@@ -196,7 +210,7 @@ for n = 1:no_tracks
         tf = (t(end)/2) + 0.02;
     end
     
-    figure(2);
+    clf; figure(2);
     subplot(3, 1, 1);
     plot(t(t0*fs:tf*fs), x_n(t0*fs:tf*fs), 'color', [0, 0.4470, 0.7410]);
     %plot(t, x_n,'color', [0, 0.4470, 0.7410]);
@@ -220,7 +234,7 @@ for n = 1:no_tracks
     %% Espectrogramas
 
     %2205 para una frecuencia mínima de 20 Hz    
-    figure(3);
+    clf; figure(3);
     set(figure(3), 'Position',  [0, 0, 560, 640])
     window = 2205;
     subplot(3, 1, 1);

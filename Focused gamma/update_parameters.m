@@ -1,5 +1,5 @@
 %Actalización de parámetros
-function [parameters] = update_parameters(parameters, grads, learningRate)
+function [parameters] = update_parameters(parameters, grads, learningRate, epsilon)
     
     %Se cargan los parámetros
     W1 = parameters{1,1};
@@ -20,7 +20,7 @@ function [parameters] = update_parameters(parameters, grads, learningRate)
     b1 = b1 - learningRate*db1;
     W2 = W2 - learningRate*dW2;
     b2 = b2 - learningRate*db2;
-    mu = mu - learningRate*dmu;
+    mu = mu - epsilon*dmu;
     
     parameters = {W1; b1; W2; b2; mu};
 end
