@@ -21,19 +21,19 @@ function [A2, cache] = forward_propagation(X, parameters, act_func)
     %Se implementa forward propagation
         
     switch act_func
-        case 'sine'
+        case "sine"
             Z1 = W1*X + b1;
             A1 = sin(Z1);
             D1 = cos(Z1); %primera derivada
         case "sigmoid"
             Z1 = W1*X + b1;
-            A1 = 1./(1 + exp(-Z1));
-            D1 = A1 - A1.^2; 
-        case 'tanh'
+            A1 = (2./(1 + exp(-Z1)) - 1); %se necesita centrar en 0
+            D1 = 2*(A1 - A1.^2); 
+        case "tanh"
             Z1 = W1*X + b1;
             A1 = tanh(Z1);
             D1 = (1 - A1.^2);
-        case 'RBF'
+        case "RBF"
             C1 = reshape(W1', n_i, 1, n_h); %matriz se separa en vectores. 
             Z1 = reshape(vecnorm(X - C1), n_h, m, 1); %se obtienen las normas ||x - c||
             A1 = exp(-(Z1.^2));

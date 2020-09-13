@@ -12,7 +12,6 @@ function [parameters] = initialize_parameters(n_x, n_h, n_y, mu_initial)
     b1 = zeros(n_h, 1);
     W2 = 0.1*rand(n_y, n_h);
     b2 = zeros(n_y,1);
-    %mu = zeros(n_x - 1, 1); %memoria gamma
     mu = mu_initial*ones(n_x - 1, 1); %memoria gamma
     
     parameters = {W1; b1; W2; b2; mu};

@@ -26,16 +26,16 @@ function [grads] = backward_propagation(parameters, cache, X, Y, act_func, dX_dM
     dmu = sum(dX(2:n_i, :).*dX_dMU, 2)/m; %(n_x-1)
     
     switch act_func
-        case 'sine'          
+        case "sine"          
             dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
             db1 = sum(dZ1,2)/m; %(n_h, 1)
         case "sigmoid"
             dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
             db1 = sum(dZ1,2)/m; %(n_h, 1) 
-        case 'tanh'
+        case "tanh"
             dW1 = (dZ1*X')/m; %(n_h,m)*(m,n_i)
             db1 = sum(dZ1,2)/m; %(n_h, 1) 
-        case 'RBF'
+        case "RBF"
             dW1 = (dZ1*(-ones(m, n_i)))/m; %(n_h,m)*(m,n_i)
             db1 = zeros(n_h, 1); %(n_h, 1) 
     end

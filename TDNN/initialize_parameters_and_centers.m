@@ -20,7 +20,7 @@ function [parameters] = initialize_parameters_and_centers(n_x, n_h, n_y, x)
     %Se escogen valores aleatorios
     %W1 = 0.2*rand(n_h, n_x); %0.1
     b1 = zeros(n_h, 1);
-    W2 = 0.2*rand(n_y, n_h);
+    W2 = 0.1*rand(n_y, n_h);
     b2 = zeros(n_y,1);
     
     parameters = {W1; b1; W2; b2};
