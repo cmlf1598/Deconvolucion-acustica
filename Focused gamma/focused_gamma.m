@@ -176,7 +176,7 @@ activation_func = activation_functions(a); %función de activación
                 end
             end
             %% Se prueba la gamma
-
+            
             Y_est = zeros(1, (no_batches*batch_sz));
 
             for j = 1:no_batches
@@ -192,7 +192,10 @@ activation_func = activation_functions(a); %función de activación
 
                 Y_est(1 + (batch_sz*(j-1)):j*batch_sz) = A2;
             end
-
+            
+            %Memoria gamma
+            mu = parameters{5,1};
+            
             %Señales de interés
             x_n = X_prev(1:(no_batches*batch_sz), 1);
             d_n = D_prev(1:(no_batches*batch_sz), 1);

@@ -1,5 +1,4 @@
 %TDNN (Time Delay Neural Network)
-%Mini-batch gradient descent
 %20-08-2020
 %Carlos López (16016)
 
@@ -7,21 +6,21 @@ clear; clc;
 
 %% Parámetros
 
-train_network = false; %verdadero si se desea entrenar la red
+train_network = true; %verdadero si se desea entrenar la red
 
 %Parámetros de entrenamiento
-signal_type = "track"; %tipo de señal ("deterministic" o "track").
-order = "sequential"; %orden de las muestras de entrenamiento
+signal_type = "deterministic"; %tipo de señal ("deterministic" o "track").
+order = "sequential"; %orden de las muestras de entrenamiento ("sequential" o "random")
 beta = 0.1; %tasa de aprendizaje
-batch_sz = 44100;
+batch_sz = 25;
 
 %Tipo de entrenamiento
-training = "full_playlist_net";
+training = "net_per_song";
 
 if (train_network == true)
     switch training
         case "net_per_song"
-            no_epochs = 5; %pasadas por canción
+            no_epochs = 10; %pasadas por canción
             no_cycles = 1; %repeticiones playlist
             save_parameters = false; %guardar los parámetros de la red 
         case "full_playlist_net"
@@ -43,15 +42,15 @@ end
 %RBF - función de base radial (gaussiana)
 
 activation_functions = ["tanh", "sine", "sigmoid"];
-activation_functions = activation_functions(3);
+activation_functions = activation_functions(2);
 
-N = 1000; %orden del filtro 
+N = 250; %orden del filtro %250
 n_h = 250; %cantidad de nodos de la capa oculta
 
 %Opciones de guardado
 save_graphs = true; %si se desea guardar los resultados
 save_audio = false; %si se desea guardar los audios
-save_numerical = true; 
+save_numerical = false; 
 
 %Path principal
 main_path = "D:\UVG\Proyecto de investigacion\Deconvolucion-acustica\Audio data\Clips grabados y originales\";
@@ -61,9 +60,11 @@ switch signal_type
         path = main_path + "data determinista\";       
         playlist =["sawtooth_250", "sawtooth_1000", "sawtooth_10000", "sine_250", "sine_1000", "sine_10000"...
                    "square_250", "square_1000", "square_10000", "AM", "FM", "AM_and_FM", "chirp20_10000"];
+        playlist = playlist(9);
     case "track"
         path = main_path + "clips musicales\";     
         playlist = ["atlantic_limited", "lonely_cat", "karma_police", "blauen_donau", "bohemian_rhapsody", "cadence", "peru", "week_no_8"];
+        playlist = playlist(7);
 end
 
 [~, no_tracks] = size(playlist);
