@@ -1,3 +1,7 @@
+%% Red neuronal Focused gamma 
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
+
 %Forward propagation
 %Inputs:
     %X - muestras de entrenamiento (muestras como vectores columna, una a
@@ -7,6 +11,7 @@
 %Outputs:
     %A2 - resultado final del forward propagation
     %cache - valores a usar en backward propagation
+    
 function [A2, cache] = forward_propagation(X, parameters, act_func)
     %Se cargan los parámetros
     W1 = parameters{1,1};

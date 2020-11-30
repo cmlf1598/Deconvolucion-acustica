@@ -1,4 +1,4 @@
-%%Modulated sine
+%% Modulated sine
 %Por Carlos Manuel López
 %30-7-20
 

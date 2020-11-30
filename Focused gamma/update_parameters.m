@@ -1,3 +1,7 @@
+%% Red neuronal Focused gamma 
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
+
 %Actalización de parámetros
 function [parameters] = update_parameters(parameters, grads, learningRate, epsilon)
     

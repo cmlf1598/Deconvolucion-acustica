@@ -1,11 +1,14 @@
-%%Filtro adaptativo por RLS
+%% Filtro adaptativo por RLS
 %Por Carlos Manuel López
-%19-4-20
 
 %Inputs:
     %lambda - factor de persistencia (varía entre 0 y 1). 
     %delta - puede ser el inverso del estimado de la señal de entrada.
     %N - número de coeficientes del filtro.
+%Outputs:
+    %Y - señal de salida
+    %E - error
+    %W - magnitud del vector de pesos
     
 function [Y, E, W] = RLS_filter(X, D, lambda, delta, N)
     

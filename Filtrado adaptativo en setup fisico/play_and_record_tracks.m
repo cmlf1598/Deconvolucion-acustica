@@ -1,4 +1,4 @@
-%%Play and record tracks
+%% Play and record tracks
 %Reproducir y grabar las canciones deseadas
 %Por Carlos Manuel López
 %26-7-20

@@ -1,1 +1,0 @@
-tapped_delay_mat(x_n(1:20), 10);

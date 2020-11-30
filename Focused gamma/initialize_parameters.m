@@ -1,3 +1,7 @@
+%% Red neuronal Focused gamma 
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
+
 %Inicialización de parámetros
 %Inputs:
     %n_x - tamaño de la capa de entrada
@@ -5,6 +9,7 @@
     %n_o - tamaño de la capa de salida
 %Output:
     %parameters - array de celdas con parámetros inicializados.
+    
 function [parameters] = initialize_parameters(n_x, n_h, n_y, mu_initial)
     
     %Se escogen valores aleatorios

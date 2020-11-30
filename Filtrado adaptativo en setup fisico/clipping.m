@@ -1,4 +1,4 @@
-%%Clipping
+%% Clipping
 %Por Carlos Manuel López
 %19-4-20
 

@@ -1,6 +1,7 @@
-%TDNN (Time Delay Neural Network)
+%% TDNN (Time Delay Neural Network)
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
 %20-08-2020
-%Carlos López (16016)
 
 clear; clc;
 

@@ -1,4 +1,4 @@
-%%Filtro adaptativo por LMS
+%% Filtro adaptativo por LMS
 %Por Carlos Manuel López
 
 clear;

@@ -1,3 +1,7 @@
+%% TDNN (Time Delay Neural Network)
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
+
 %Inicialización de parámetros
 %Inputs:
     %n_x - tamaño de la capa de entrada

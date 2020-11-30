@@ -1,4 +1,4 @@
-%%Filtro adaptativo por RLS
+%% Filtro adaptativo por RLS
 %Por Carlos Manuel López
 %10-4-20
 

@@ -1,7 +1,8 @@
-%Obtener data 
-
+%% Tabulación de data
+%Por Carlos Manuel López
 clear; clc;
 
+%%
 %Filtro seleccionado
 %filter = "LMS_est";
 %filter = "LMS_norm";
@@ -10,7 +11,9 @@ filter = "RLS";
 %data = "last_ECM_";
 %data = "max_W_";
 data = ["last_ECM_", "max_W_"];
-% 
+
+
+%% Señales de interés 
 % signal = ["250_sine", "1000_sine", "10000_sine",...
 %           "250_square", "1000_square", "10000_square",...
 %           "250_sawtooth", "1000_sawtooth", "10000_sawtooth",...
@@ -27,16 +30,15 @@ data = ["last_ECM_", "max_W_"];
          
 signal = ["bohemian_rhapsody", "cadence", "peru", "week_no_8",...
           "lonely_cat", "karma_police", "atlantic_limited",...
-          "blauen_donau"];
-%       
-      
+          "blauen_donau"];      
+
+%% Inicialización
 [~,k] = size(data);
 [~,n] = size(signal);     
-%total_ECM = cell(n, 2);
-%total_max_W = cell(n, 2);
 total = cell(n, 3);
 total_num = zeros(n,2);
 
+%% Tabulación
 for j = 1:k
     
     for i = 1:n
@@ -57,8 +59,7 @@ for j = 1:k
 
 end
 
-%promedio
+%% Promedios
 last_ECM_mean = mean(total_num(:,1));
 max_W_mean = mean(total_num(:,2));
 
-[last_ECM_mean, max_W_mean]

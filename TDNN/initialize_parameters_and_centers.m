@@ -1,3 +1,7 @@
+%% TDNN (Time Delay Neural Network)
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
+
 %Inicialización de parámetros
 %Inputs:
     %n_x - tamaño de la capa de entrada
@@ -6,6 +10,7 @@
     %x - data de entrada 
 %Output:
     %parameters - array de celdas con parámetros inicializados.
+    
 function [parameters] = initialize_parameters_and_centers(n_x, n_h, n_y, x)
 
     m = size(x, 1);

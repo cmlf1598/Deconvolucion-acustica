@@ -1,3 +1,7 @@
+%% TDNN (Time Delay Neural Network)
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
+
 %Forward propagation
 %Inputs:
     %X - muestras de entrenamiento (muestras como vectores columna, una a

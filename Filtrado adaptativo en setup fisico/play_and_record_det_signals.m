@@ -1,4 +1,4 @@
-%%Play and record tracks deterministic signals
+%% Play and record tracks deterministic signals
 %Reproducir y grabar señales deterministas
 %Por Carlos Manuel López
 %22-7-20

@@ -1,3 +1,5 @@
+%% Respuesta en frecuencia del cuarto
+
 %https://la.mathworks.com/help/audio/ug/measure-frequency-response-of-an-audio-device.html
 %a 20 de volumen
 

@@ -1,4 +1,4 @@
-%%Filtro adaptativo por LMS
+%% Filtro adaptativo por LMS
 %Por Carlos Manuel López
 %19-4-20
 
@@ -6,6 +6,10 @@
     %beta - tasa de aprendizaje
     %N - número de coeficientes del filtro
     %normalized (logical) - si se desea la variante normalizada
+%Outputs:
+    %Y - señal de salida
+    %E - error
+    %W - magnitud del vector de pesos
     
 function [Y,E,W] = LMS_filter(X, D, beta, N, normalized)
     

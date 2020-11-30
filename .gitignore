@@ -1,5 +1,6 @@
 *.flac
 *.eps
+*.wav
 Audio data/
 Filtrado adaptativo en setup fisico/audio data/
 Filtrado adaptativo en setup fisico/results/

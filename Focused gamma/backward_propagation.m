@@ -1,4 +1,8 @@
-%Backward propagation
+%% Red neuronal Focused gamma 
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
+
+%Backward propagation (vectorizado)
 
 
 function [grads] = backward_propagation(parameters, cache, X, Y, act_func, dX_dMU)

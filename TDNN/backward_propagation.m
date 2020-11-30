@@ -1,5 +1,8 @@
-%Backward propagation
+%% TDNN (Time Delay Neural Network)
+% Por Carlos Manuel López 
+% Basado en el curso "Redes neurales y aprendizaje profundo" por Andrew Ng
 
+%Backward propagation
 
 function [grads] = backward_propagation(parameters, cache, X, Y, act_func)
     [~, m] = size(Y);

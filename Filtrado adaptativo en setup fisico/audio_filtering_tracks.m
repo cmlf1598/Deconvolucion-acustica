@@ -1,22 +1,21 @@
-%%Audio tracks filtering
+%% Audio tracks filtering
 %Por Carlos Manuel López
 %19-4-20
 
 clear; clc;
-%
 path = "/audio data/inputs/clips musicales/";
 
-%Selección de la canción o canciones a filtrar
-%
+%% Selección de la canción o canciones a filtrar
+
 %playlist = ["bohemian_rhapsody", "cadence", "peru", "week_no_8"];
 %playlist = ["lonely_cat", "atlantic_limited", "el_sol_no_es_para_todos", "karma_police", "blauen_donau"];
-%
+
 %playlist = "bohemian_rhapsody";
 %playlist = "cadence";
 %playlist = "peru"; 
 %playlist = "week_no_8";
 %playlist = "evil";
-%
+
 %playlist = "lonely_cat";
 %playlist = "atlantic_limited";
 %playlist = "el_sol_no_es_para_todos";
@@ -25,6 +24,7 @@ playlist = "blauen_donau";
 
 [~, no_tracks] = size(playlist);
 
+%% Filtrado
 for i = 1:no_tracks
     %Clips de audio
     [D, fs] = audioread([pwd, char(path+playlist(i)+"_original.wav")]); %señal original

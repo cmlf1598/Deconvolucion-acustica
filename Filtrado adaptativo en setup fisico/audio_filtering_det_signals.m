@@ -2,11 +2,10 @@
 %Por Carlos Manuel López
 %19-4-20
 
-clear;
-%
+clear; 
 path = "/audio data/inputs/data determinista/";
 
-%Seleccionar el tipo de señal deseada
+%% Seleccionar el tipo de señal deseada
 %signal = "sine";
 %signal = "square";
 signal = "sawtooth";
@@ -22,6 +21,7 @@ signal = "sawtooth";
 
 [~, no_tracks] = size(test_freq);
 
+%% Filtrado
 for i = 1:no_tracks
     %Clips de audio
     [D, fs] = audioread([pwd, char(path+signal+"_"+test_freq(i)+"_original.wav")]); %señal original
@@ -78,7 +78,6 @@ for i = 1:no_tracks
         %Se grafica el vector w
         figure(2);
         %plot(t, W);
-        %plot(t(1:fs/5), W(1:fs/5)); %para mejor visualización
         plot(t(1:fs/20), W(1:fs/20)); %para mejor visualización
         legend norm(w);
         xlabel(t_tag); 
@@ -92,7 +91,6 @@ for i = 1:no_tracks
         ecm_h_axis = linspace(1,m,m);
         ecm = cumsum(E.^2)./(ecm_h_axis');
         %plot(t, ecm);
-        %plot(t(1:fs/5), ecm(1:fs/5)); %para mejor visualización
         plot(t(1:fs/20), ecm(1:fs/20)); %para mejor visualización
         legend ECM;
         xlabel(t_tag);
